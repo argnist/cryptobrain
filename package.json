@@ -1,0 +1,15 @@
+{
+  "name": "cryptobrain",
+  "version": "0.0.1",
+  "dependencies": {
+    "brain.js": "^1.0.0-rc.3",
+    "nedb": "^1.8.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  },
+  "scripts": {
+    "run": "node server.js",
+    "find": "node trainingData.js",
+    "neural": "node neural.js"
+  }
+}
