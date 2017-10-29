@@ -8,8 +8,8 @@
     "request-promise": "^4.2.2"
   },
   "scripts": {
-    "run": "node server.js",
-    "find": "node trainingData.js",
+    "server": "node server.js",
+    "train": "node trainingData.js",
     "neural": "node neural.js"
   }
 }

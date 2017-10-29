@@ -3,39 +3,46 @@ const trainDb = require("./database")("train");
 
 const net = new brain.NeuralNetwork({
     activation: 'sigmoid', // activation function sigmoid   relu   leaky-relu   tanh
-    hiddenLayers: [2],
-    learningRate: 0.6 // global learning rate, useful when training using streams
+    hiddenLayers: [6],
+    learningRate: 0.2 // global learning rate, useful when training using streams
 });
 
+const getAccuracy = (net, testData) => {
+    let hits = 0;
+    testData.forEach((datapoint) => {
+        const output = net.run(datapoint.input);
+        console.log(datapoint.input, datapoint.output, [...output]);
+        const passed = output.map((item, index) => Number(Math.round(item) === datapoint.output[index])).reduce((prev, cur) => prev + cur);
 
-// const data = [{input: { r: 0.03, g: 0.7, b: 0.5 }, output: { black: 1 }},
-//     {input: { r: 0.16, g: 0.09, b: 0.2 }, output: { white: 1 }},
-//     {input: { r: 0.5, g: 0.5, b: 1.0 }, output: { white: 1 }}];
+        if (output.length === passed) {
+            hits += 1;
+        }
+    });
+    return 1 - hits / testData.length;
+};
 
 const main = async () => {
-    const data = (await trainDb.find({})).map(item => ({input: item.input, output: item.output}));
-    const SPLIT = Math.floor(data.length * 0.75);
+    const data = (await trainDb.find({})).map(item => ({
+        input: [...item.input.slice(2, 6), ...item.input.slice(7, 12)],
+        output: item.output.slice(0, 2)
+    }));
+   // console.log(data);
+    const SPLIT = Math.floor(data.length * 0.8);
     const trainData = data.slice(0, SPLIT);
     const testData = data.slice(SPLIT + 1);
     //console.log(testData);
 
-    net.train(trainData, {
-        errorThresh: 0.005,  // error threshold to reach
-        iterations: 20000,   // maximum training iterations
+    const trainResult = net.train(trainData, {
+        errorThresh: 0.05,  // error threshold to reach
+        iterations: 10000,   // maximum training iterations
         log: true,           // console.log() progress periodically
-        logPeriod: 1000,       // number of iterations between logging
+        logPeriod: 500,       // number of iterations between logging
     });
 
-    const output = testData.map(test => ({input: test.input, output: net.run(test.input)}));
-//const output = net.run({ r: 1, g: 0.4, b: 0 });  // { white: 0.99, black: 0.002 }
-    console.log(output);
-    //console.log(net.run(testData[0].input));
-    //console.log(net.run(testData[1].input));
-    //console.log(net.run(testData[2].input));
+    const accuracy = getAccuracy(net, testData);
 
+    console.log(trainResult);
+    console.log(accuracy, testData.length);
 
-    //
-    // const output2 = net.run({ r: 1, g: 0.4, b: 0 });  // { white: 0.99, black: 0.002 }
-    // console.log(output2);
 };
 main();

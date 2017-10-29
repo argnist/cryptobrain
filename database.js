@@ -20,13 +20,20 @@ const Db = (key) => {
     return {
         insert: (data) => db.insert(data),
         find: (query, sort = {}) =>
-            new Promise(function (resolve, reject) {
-                db.find(query).sort(sort).exec(function (err, data) {
+            new Promise((resolve, reject) => {
+                db.find(query).sort(sort).exec((err, data) => {
                     if (err !== null) return reject(err);
                     resolve(data);
                 });
+            }),
+        remove: (query = {}, options = {}) =>
+            new Promise((resolve, reject) => {
+                db.remove(query, options, (err, numRemoved) => {
+                    if (err !== null) return reject(err);
+                    resolve(numRemoved);
+                });
             })
-    };
+    }
 };
 
 module.exports = Db;
