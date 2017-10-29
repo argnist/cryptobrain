@@ -34,7 +34,7 @@ async function finder() {
                 ];
                 output = [
                     ...output,
-                    Number(data[i + startShift - j].change_1h > 0)
+                    Number(data[i + startShift - j].change_1h > 2)
                 ];
                 console.log(data[i - j].price_usd, data[i + startShift - j].price_usd, data[i + startShift - j].time - data[i - j].time);
 

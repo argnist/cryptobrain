@@ -3,8 +3,8 @@ const trainDb = require("./database")("train");
 
 const net = new brain.NeuralNetwork({
     activation: 'sigmoid', // activation function sigmoid   relu   leaky-relu   tanh
-    hiddenLayers: [6],
-    learningRate: 0.2 // global learning rate, useful when training using streams
+    hiddenLayers: [4, 3],
+    learningRate: 0.1 // global learning rate, useful when training using streams
 });
 
 const getAccuracy = (net, testData) => {
@@ -33,7 +33,7 @@ const main = async () => {
     //console.log(testData);
 
     const trainResult = net.train(trainData, {
-        errorThresh: 0.05,  // error threshold to reach
+        errorThresh: 0.03,  // error threshold to reach
         iterations: 10000,   // maximum training iterations
         log: true,           // console.log() progress periodically
         logPeriod: 500,       // number of iterations between logging
