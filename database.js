@@ -9,9 +9,15 @@ const db2 = new Datastore({filename: 'train'});
 db2.loadDatabase();
 db2.ensureIndex({fieldName: 'key', unique: true});
 
+const db3 = new Datastore({filename: 'vector'});
+db3.loadDatabase();
+db3.ensureIndex({fieldName: 'time', unique: true});
+
+
 const databases = {
     history: db1,
-    train: db2
+    train: db2,
+    vector: db3
 };
 
 
